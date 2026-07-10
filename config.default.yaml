@@ -1,0 +1,30 @@
+# Room Announcer 插件默认配置
+
+# 是否启用插件
+enabled: true
+
+# 检测间隔（毫秒）
+checkInterval: 5000
+
+# 玩家登录时是否播报房间列表
+announceOnJoin: true
+
+# 登录播报延迟（毫秒）
+announceDelay: 1500
+
+# 是否显示房间人数
+showPlayerCount: true
+
+# 是否显示房间状态
+showRoomState: true
+
+# 公开房间过滤（是否只显示带特定前缀的房间）
+enablePubWeb: false
+pubPrefix: "pub"
+
+# 私密房间过滤（是否隐藏带特定前缀的房间）
+enablePriWeb: true
+priPrefix: "sm"
+
+# 播报消息前缀
+messagePrefix: "【房间播报】"
