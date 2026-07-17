@@ -174,6 +174,7 @@ const pluginModule = {
                 },
             });
         }
+
         function sendTipToUser(userId, tip) {
             api.sendCommandToUser(userId, {
                 type: 5,
@@ -184,6 +185,7 @@ const pluginModule = {
                 },
             });
         }
+
         // 检测房间变化
         function checkRoomChanges() {
             const currentSnapshot = getRoomSnapshot();
@@ -207,11 +209,8 @@ const pluginModule = {
                     return;
                 }
                 setTimeout(() => {
-                    sendTipToUser(user.id, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3秒后播报房间列表...');
-                }, 500);
-                setTimeout(() => {
                     announceRoomListToUser(user.id, user.name);
-                }, 3500);
+                }, 3000);
             });
             unsubscribers.push(unsubAuth);
             api.logger.info(`[RoomAnnouncer] 已启用玩家登录时播报 (延迟: ${announceDelay}ms)`);
