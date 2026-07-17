@@ -138,7 +138,7 @@ const pluginModule = {
         // 向未在房间中的玩家播报房间列表
         function announceRoomList() {
             const message = generateRoomListMessage();
-            const content = message ?? `${messagePrefix} 当前没有公开房间`;
+            const content = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' + (message ?? `${messagePrefix} 当前没有公开房间`);
             const players = getPlayersNotInRoom();
             if (players.length === 0) {
                 api.logger.debug('[RoomAnnouncer] 没有需要播报的玩家');
