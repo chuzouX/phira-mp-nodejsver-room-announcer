@@ -164,7 +164,7 @@ const pluginModule = {
         // 向特定玩家播报房间列表
         function announceRoomListToUser(userId, userName) {
             const message = generateRoomListMessage();
-            const content = '\n\n\n\n\n\n\n\n\n\n' + (message ?? `${messagePrefix} 当前没有公开房间`);
+            const content = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' + (message ?? `${messagePrefix} 当前没有公开房间`);
             api.sendCommandToUser(userId, {
                 type: 5,
                 message: {
@@ -206,10 +206,12 @@ const pluginModule = {
                 if (silentIds.has(user.id)) {
                     return;
                 }
-                sendTipToUser(user.id, '\n\n\n\n\n\n\n\n\n\n3秒后播报房间列表...');
+                setTimeout(() => {
+                    sendTipToUser(user.id, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3秒后播报房间列表...');
+                }, 500);
                 setTimeout(() => {
                     announceRoomListToUser(user.id, user.name);
-                }, 3000);
+                }, 3500);
             });
             unsubscribers.push(unsubAuth);
             api.logger.info(`[RoomAnnouncer] 已启用玩家登录时播报 (延迟: ${announceDelay}ms)`);
