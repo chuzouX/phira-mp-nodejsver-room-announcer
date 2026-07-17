@@ -19,6 +19,10 @@
  * - publicOnly: 是否只播报公开房间（默认 false）
  * - publicPrefix: 公开房间前缀（默认 "pub"）
  * - messagePrefix: 消息前缀（默认 "【房间播报】"）
+ *
+ * 环境变量:
+ * - SILENT_PHIRA_IDS: 逗号分隔的用户 ID 列表，不向这些用户推送播报且不产生日志
+ *   例: SILENT_PHIRA_IDS=1001,1002,1003
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const unsubscribers = [];
@@ -44,6 +48,19 @@ const pluginModule = {
         if (!enabled) {
             api.logger.info('[RoomAnnouncer] 插件已禁用');
             return;
+        }
+        // 读取静默机器人用户 ID 列表（不向这些用户推送播报）
+        const silentIdsRaw = process.env.SILENT_PHIRA_IDS || '';
+        const silentIds = new Set(
+            silentIdsRaw
+                .split(',')
+                .map((id) => id.trim())
+                .filter(Boolean)
+                .map(Number)
+                .filter((id) => !isNaN(id))
+        );
+        if (silentIds.size > 0) {
+            api.logger.info(`[RoomAnnouncer] 静默用户 ID: ${[...silentIds].join(', ')}`);
         }
         // 房间过滤函数（参考 Web Dashboard）
         function filterRooms(rooms) {
@@ -119,13 +136,11 @@ const pluginModule = {
             }));
             return JSON.stringify(rooms);
         }
-        // 获取未在房间中的玩家列表
+        // 获取未在房间中的玩家列表（排除静默用户）
         function getPlayersNotInRoom() {
-            // 使用新的 API 获取在线玩家
             const allPlayers = api.getOnlinePlayers();
-            // 过滤出未在房间中的玩家
             return allPlayers
-                .filter(player => !player.roomId)
+                .filter(player => !player.roomId && !silentIds.has(player.id))
                 .map(player => ({ id: player.id, name: player.name }));
         }
         // 向未在房间中的玩家播报房间列表
@@ -154,8 +169,11 @@ const pluginModule = {
             }
             api.logger.info(`[RoomAnnouncer] 已向 ${sentCount}/${players.length} 名玩家发送消息`);
         }
-        // 向特定玩家播报房间列表
+        // 向特定玩家播报房间列表（跳过静默用户）
         function announceRoomListToUser(userId, userName) {
+            if (silentIds.has(userId)) {
+                return;
+            }
             const message = generateRoomListMessage();
             const content = message ?? `${messagePrefix} 当前没有公开房间`;
             api.logger.info(`[RoomAnnouncer] 向玩家 ${userName} (ID: ${userId}) 播报房间列表`);
@@ -193,8 +211,10 @@ const pluginModule = {
         if (announceOnJoin) {
             api.logger.info('[RoomAnnouncer] 正在注册 player:auth:success 事件监听器...');
             const unsubAuth = api.events.on('player:auth:success', (payload) => {
-                api.logger.debug(`[RoomAnnouncer] 收到 player:auth:success 事件: ${JSON.stringify(payload)}`);
                 const { user } = payload;
+                if (silentIds.has(user.id)) {
+                    return;
+                }
                 // 延迟一下再播报，确保玩家已完全加载
                 setTimeout(() => {
                     api.logger.info(`[RoomAnnouncer] 向玩家 ${user.name} (ID: ${user.id}) 播报房间列表`);
