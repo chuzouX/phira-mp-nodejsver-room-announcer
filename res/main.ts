@@ -103,7 +103,7 @@ const pluginModule: PluginModule = {
         return null;
       }
 
-      const lines: string[] = [`${messagePrefix} 当前公开房间列表：`];
+      const lines: string[] = [`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前公开房间列表：`];
 
       for (const room of rooms) {
         const parts: string[] = [];
@@ -167,7 +167,7 @@ const pluginModule: PluginModule = {
     // 向未在房间中的玩家播报房间列表
     function announceRoomList() {
       const message = generateRoomListMessage();
-      const content = message ?? `${messagePrefix} 当前没有公开房间`;
+      const content = message ?? `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
 
       const players = getPlayersNotInRoom();
       if (players.length === 0) {
@@ -196,7 +196,7 @@ const pluginModule: PluginModule = {
     // 向特定玩家播报房间列表
     function announceRoomListToUser(userId: number, userName: string) {
       const message = generateRoomListMessage();
-      const content = message ?? `${messagePrefix} 当前没有公开房间`;
+      const content = message ?? `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
 
       api.logger.info(`[RoomAnnouncer] 向玩家 ${userName} (ID: ${userId}) 播报房间列表`);
 
