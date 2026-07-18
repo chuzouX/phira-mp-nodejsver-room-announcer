@@ -45,6 +45,13 @@ const pluginModule = {
             api.logger.info('[RoomAnnouncer] 插件已禁用');
             return;
         }
+        const silentIdsRaw = process.env.SILENT_PHIRA_IDS || '';
+        const silentIds = new Set(
+            silentIdsRaw.split(',').map(id => id.trim()).filter(Boolean).map(Number).filter(id => !isNaN(id))
+        );
+        if (silentIds.size > 0) {
+            api.logger.info(`[RoomAnnouncer] 静默用户 ID: ${[...silentIds].join(', ')}`);
+        }
         // 房间过滤函数（参考 Web Dashboard）
         function filterRooms(rooms) {
             return rooms.filter(room => {
@@ -125,7 +132,7 @@ const pluginModule = {
             const allPlayers = api.getOnlinePlayers();
             // 过滤出未在房间中的玩家
             return allPlayers
-                .filter(player => !player.roomId)
+                .filter(player => !player.roomId && !silentIds.has(player.id))
                 .map(player => ({ id: player.id, name: player.name }));
         }
         // 向未在房间中的玩家播报房间列表
@@ -193,13 +200,13 @@ const pluginModule = {
         if (announceOnJoin) {
             api.logger.info('[RoomAnnouncer] 正在注册 player:auth:success 事件监听器...');
             const unsubAuth = api.events.on('player:auth:success', (payload) => {
-                api.logger.debug(`[RoomAnnouncer] 收到 player:auth:success 事件: ${JSON.stringify(payload)}`);
                 const { user } = payload;
-                // 延迟一下再播报，确保玩家已完全加载
+                if (silentIds.has(user.id)) {
+                    return;
+                }
                 setTimeout(() => {
-                    api.logger.info(`[RoomAnnouncer] 向玩家 ${user.name} (ID: ${user.id}) 播报房间列表`);
                     announceRoomListToUser(user.id, user.name);
-                }, announceDelay);
+                }, 3000);
             });
             unsubscribers.push(unsubAuth);
             api.logger.info(`[RoomAnnouncer] 已启用玩家登录时播报 (延迟: ${announceDelay}ms)`);
