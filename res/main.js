@@ -46,9 +46,7 @@ const pluginModule = {
             return;
         }
         const silentIdsRaw = process.env.SILENT_PHIRA_IDS || '';
-        const silentIds = new Set(
-            silentIdsRaw.split(',').map(id => id.trim()).filter(Boolean).map(Number).filter(id => !isNaN(id))
-        );
+        const silentIds = new Set(silentIdsRaw.split(',').map(id => id.trim()).filter(Boolean).map(Number).filter(id => !isNaN(id)));
         if (silentIds.size > 0) {
             api.logger.info(`[RoomAnnouncer] 静默用户 ID: ${[...silentIds].join(', ')}`);
         }
@@ -201,9 +199,8 @@ const pluginModule = {
             api.logger.info('[RoomAnnouncer] 正在注册 player:auth:success 事件监听器...');
             const unsubAuth = api.events.on('player:auth:success', (payload) => {
                 const { user } = payload;
-                if (silentIds.has(user.id)) {
+                if (silentIds.has(user.id))
                     return;
-                }
                 setTimeout(() => {
                     announceRoomListToUser(user.id, user.name);
                 }, 3000);
