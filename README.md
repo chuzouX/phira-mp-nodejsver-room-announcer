@@ -37,25 +37,25 @@ showRoomState: true
 publicOnly: true
 
 # 公开房间前缀
-publicPrefix: "pub"
+publicPrefix: 'pub'
 
 # 播报消息前缀
-messagePrefix: "【房间播报】"
+messagePrefix: '【房间播报】'
 ```
 
 ## 配置项说明
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `enabled` | boolean | `true` | 是否启用插件 |
-| `checkInterval` | number | `5000` | 检测间隔（毫秒） |
-| `announceOnJoin` | boolean | `true` | 玩家登录时是否播报 |
-| `announceDelay` | number | `1500` | 登录播报延迟（毫秒） |
-| `showPlayerCount` | boolean | `true` | 是否显示房间人数 |
-| `showRoomState` | boolean | `true` | 是否显示房间状态 |
-| `publicOnly` | boolean | `true` | 是否只播报公开房间 |
-| `publicPrefix` | string | `"pub"` | 公开房间前缀 |
-| `messagePrefix` | string | `"【房间播报】"` | 播报消息前缀 |
+| 配置项            | 类型    | 默认值           | 说明                 |
+| ----------------- | ------- | ---------------- | -------------------- |
+| `enabled`         | boolean | `true`           | 是否启用插件         |
+| `checkInterval`   | number  | `5000`           | 检测间隔（毫秒）     |
+| `announceOnJoin`  | boolean | `true`           | 玩家登录时是否播报   |
+| `announceDelay`   | number  | `1500`           | 登录播报延迟（毫秒） |
+| `showPlayerCount` | boolean | `true`           | 是否显示房间人数     |
+| `showRoomState`   | boolean | `true`           | 是否显示房间状态     |
+| `publicOnly`      | boolean | `true`           | 是否只播报公开房间   |
+| `publicPrefix`    | string  | `"pub"`          | 公开房间前缀         |
+| `messagePrefix`   | string  | `"【房间播报】"` | 播报消息前缀         |
 
 ## 控制台命令
 

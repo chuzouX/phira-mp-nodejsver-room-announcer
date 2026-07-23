@@ -46,13 +46,18 @@ const pluginModule = {
             return;
         }
         const silentIdsRaw = process.env.SILENT_PHIRA_IDS || '';
-        const silentIds = new Set(silentIdsRaw.split(',').map(id => id.trim()).filter(Boolean).map(Number).filter(id => !isNaN(id)));
+        const silentIds = new Set(silentIdsRaw
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean)
+            .map(Number)
+            .filter((id) => !isNaN(id)));
         if (silentIds.size > 0) {
             api.logger.info(`[RoomAnnouncer] 静默用户 ID: ${[...silentIds].join(', ')}`);
         }
         // 房间过滤函数（参考 Web Dashboard）
         function filterRooms(rooms) {
-            return rooms.filter(room => {
+            return rooms.filter((room) => {
                 // 如果启用了公开房间过滤，只显示以 pubPrefix 开头的房间
                 if (enablePubWeb) {
                     return room.id.startsWith(pubPrefix);
@@ -85,7 +90,9 @@ const pluginModule = {
             if (rooms.length === 0) {
                 return null;
             }
-            const lines = [`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前公开房间列表：`];
+            const lines = [
+                `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前公开房间列表：`,
+            ];
             for (const room of rooms) {
                 const parts = [];
                 // 房间名
@@ -113,8 +120,7 @@ const pluginModule = {
         }
         // 获取房间快照
         function getRoomSnapshot() {
-            const rooms = filterRooms(api.getRooms())
-                .map(room => ({
+            const rooms = filterRooms(api.getRooms()).map((room) => ({
                 id: room.id,
                 name: room.name,
                 playerCount: room.playerCount,
@@ -130,13 +136,14 @@ const pluginModule = {
             const allPlayers = api.getOnlinePlayers();
             // 过滤出未在房间中的玩家
             return allPlayers
-                .filter(player => !player.roomId && !silentIds.has(player.id))
-                .map(player => ({ id: player.id, name: player.name }));
+                .filter((player) => !player.roomId && !silentIds.has(player.id))
+                .map((player) => ({ id: player.id, name: player.name }));
         }
         // 向未在房间中的玩家播报房间列表
         function announceRoomList() {
             const message = generateRoomListMessage();
-            const content = message ?? `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
+            const content = message ??
+                `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
             const players = getPlayersNotInRoom();
             if (players.length === 0) {
                 api.logger.debug('[RoomAnnouncer] 没有需要播报的玩家');
@@ -162,7 +169,8 @@ const pluginModule = {
         // 向特定玩家播报房间列表
         function announceRoomListToUser(userId, userName) {
             const message = generateRoomListMessage();
-            const content = message ?? `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
+            const content = message ??
+                `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
             api.logger.info(`[RoomAnnouncer] 向玩家 ${userName} (ID: ${userId}) 播报房间列表`);
             // 通过游戏协议向该玩家发送系统消息
             const success = api.sendCommandToUser(userId, {
@@ -266,7 +274,7 @@ const pluginModule = {
             checkTimer = null;
         }
         // 取消事件监听
-        unsubscribers.forEach(unsub => unsub());
+        unsubscribers.forEach((unsub) => unsub());
         unsubscribers.length = 0;
     },
 };

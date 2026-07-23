@@ -66,7 +66,12 @@ const pluginModule: PluginModule = {
 
     const silentIdsRaw = process.env.SILENT_PHIRA_IDS || '';
     const silentIds = new Set(
-      silentIdsRaw.split(',').map(id => id.trim()).filter(Boolean).map(Number).filter(id => !isNaN(id))
+      silentIdsRaw
+        .split(',')
+        .map((id) => id.trim())
+        .filter(Boolean)
+        .map(Number)
+        .filter((id) => !isNaN(id)),
     );
     if (silentIds.size > 0) {
       api.logger.info(`[RoomAnnouncer] 静默用户 ID: ${[...silentIds].join(', ')}`);
@@ -74,7 +79,7 @@ const pluginModule: PluginModule = {
 
     // 房间过滤函数（参考 Web Dashboard）
     function filterRooms(rooms: ReturnType<typeof api.getRooms>) {
-      return rooms.filter(room => {
+      return rooms.filter((room) => {
         // 如果启用了公开房间过滤，只显示以 pubPrefix 开头的房间
         if (enablePubWeb) {
           return room.id.startsWith(pubPrefix);
@@ -111,7 +116,9 @@ const pluginModule: PluginModule = {
         return null;
       }
 
-      const lines: string[] = [`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前公开房间列表：`];
+      const lines: string[] = [
+        `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前公开房间列表：`,
+      ];
 
       for (const room of rooms) {
         const parts: string[] = [];
@@ -148,15 +155,14 @@ const pluginModule: PluginModule = {
 
     // 获取房间快照
     function getRoomSnapshot(): string {
-      const rooms = filterRooms(api.getRooms())
-        .map(room => ({
-          id: room.id,
-          name: room.name,
-          playerCount: room.playerCount,
-          maxPlayers: room.maxPlayers,
-          locked: room.locked,
-          state: room.state,
-        }));
+      const rooms = filterRooms(api.getRooms()).map((room) => ({
+        id: room.id,
+        name: room.name,
+        playerCount: room.playerCount,
+        maxPlayers: room.maxPlayers,
+        locked: room.locked,
+        state: room.state,
+      }));
 
       return JSON.stringify(rooms);
     }
@@ -168,14 +174,16 @@ const pluginModule: PluginModule = {
 
       // 过滤出未在房间中的玩家
       return allPlayers
-        .filter(player => !player.roomId && !silentIds.has(player.id))
-        .map(player => ({ id: player.id, name: player.name }));
+        .filter((player) => !player.roomId && !silentIds.has(player.id))
+        .map((player) => ({ id: player.id, name: player.name }));
     }
 
     // 向未在房间中的玩家播报房间列表
     function announceRoomList() {
       const message = generateRoomListMessage();
-      const content = message ?? `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
+      const content =
+        message ??
+        `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
 
       const players = getPlayersNotInRoom();
       if (players.length === 0) {
@@ -204,7 +212,9 @@ const pluginModule: PluginModule = {
     // 向特定玩家播报房间列表
     function announceRoomListToUser(userId: number, userName: string) {
       const message = generateRoomListMessage();
-      const content = message ?? `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
+      const content =
+        message ??
+        `\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n${messagePrefix} 当前没有公开房间`;
 
       api.logger.info(`[RoomAnnouncer] 向玩家 ${userName} (ID: ${userId}) 播报房间列表`);
 
@@ -241,7 +251,9 @@ const pluginModule: PluginModule = {
     // 启动定时检测
     checkTimer = setInterval(checkRoomChanges, checkInterval);
     api.logger.info(`[RoomAnnouncer] 插件已加载，检测间隔: ${checkInterval}ms`);
-    api.logger.info(`[RoomAnnouncer] 配置: enablePubWeb=${enablePubWeb}, enablePriWeb=${enablePriWeb}, announceOnJoin=${announceOnJoin}`);
+    api.logger.info(
+      `[RoomAnnouncer] 配置: enablePubWeb=${enablePubWeb}, enablePriWeb=${enablePriWeb}, announceOnJoin=${announceOnJoin}`,
+    );
 
     // 监听玩家登录事件
     if (announceOnJoin) {
@@ -327,7 +339,7 @@ const pluginModule: PluginModule = {
     }
 
     // 取消事件监听
-    unsubscribers.forEach(unsub => unsub());
+    unsubscribers.forEach((unsub) => unsub());
     unsubscribers.length = 0;
   },
 };

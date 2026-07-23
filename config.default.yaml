@@ -20,11 +20,11 @@ showRoomState: true
 
 # 公开房间过滤（是否只显示带特定前缀的房间）
 enablePubWeb: false
-pubPrefix: "pub"
+pubPrefix: 'pub'
 
 # 私密房间过滤（是否隐藏带特定前缀的房间）
 enablePriWeb: true
-priPrefix: "sm"
+priPrefix: 'sm'
 
 # 播报消息前缀
-messagePrefix: "【房间播报】"
+messagePrefix: '【房间播报】'
